@@ -1,30 +1,33 @@
 import React from 'react';
 import { Text, View, TouchableOpacity, StyleSheet } from 'react-native';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
+import { Link } from 'expo-router';
 
 // Componente Button com as propriedades 'title' e 'icon'
 interface ButtonProps {
   title?: string;
+  color?: string;
+  width?: number;
+  height?: number;
   icon?: React.ComponentProps<typeof MaterialCommunityIcons>['name'];
 }
 
-const Button: React.FC<ButtonProps> = ({ title = "Clique aqui", icon }) => { 
+const Button: React.FC<ButtonProps> = ({ title = "Clique aqui", icon, color, width, height}) => { 
   const handlePress = () => {
-    console.log('Botão personalizado pressionado!');
+    console.log("Botão clicado");
   };
 
   return (
-    <View style={styles.container}>
+    <Link href ={"/dip"} style={styles.container}>
       <TouchableOpacity
         style={styles.button}
         onPress={handlePress}
       >
-        {/* Se a propriedade 'icon' for passada, renderiza o ícone */}
-
         <MaterialCommunityIcons name={icon} size={45} color="black" style={styles.icon}  />
         <Text style={styles.text}>{title}</Text>
+        
       </TouchableOpacity>
-    </View>
+    </Link>
   );
 };
 

@@ -1,34 +1,40 @@
 import React from 'react';
-import { Text, View, TouchableOpacity, StyleSheet } from 'react-native';
+import { Text, TouchableOpacity, StyleSheet, ViewStyle, TextStyle } from 'react-native';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
-import { Link } from 'expo-router';
+import { Href, Link } from 'expo-router';
 
-// Componente Button com as propriedades 'title' e 'icon'
+// Interface para as propriedades do botão
 interface ButtonProps {
   title?: string;
-  color?: string;
-  width?: number;
-  height?: number;
+  href?: Href;
   icon?: React.ComponentProps<typeof MaterialCommunityIcons>['name'];
+  styleButton?: ViewStyle;
+  textStyle?: TextStyle;
+  onPress?: () => void; // Função para ser chamada ao pressionar
 }
 
-const Button: React.FC<ButtonProps> = ({ title = "Clique aqui", icon, color, width, height}) => { 
-  const handlePress = () => {
-    console.log("Botão clicado");
-  };
-
-  return (
-    <Link href ={"/dip"} style={styles.container}>
-      <TouchableOpacity
-        style={styles.button}
-        onPress={handlePress}
-      >
-        <MaterialCommunityIcons name={icon} size={45} color="black" style={styles.icon}  />
-        <Text style={styles.text}>{title}</Text>
-        
-      </TouchableOpacity>
-    </Link>
+const Button: React.FC<ButtonProps> = ({ 
+  title = "Clique aqui", 
+  icon, 
+  href, 
+  textStyle, 
+  styleButton, 
+  onPress 
+}) => { 
+  const content = (
+    <TouchableOpacity
+      onPress={onPress} // Chama a função se fornecida
+      style={[styleButton, styles.button]}
+    >
+      {icon && (
+        <MaterialCommunityIcons name={icon} size={45} color="black" style={styles.icon} />
+      )}
+      <Text style={[styles.text, textStyle]}>{title}</Text>
+    </TouchableOpacity>
   );
+
+  // Se 'href' for passado, renderiza com Link; caso contrário, apenas o botão
+  return href ? <Link href={href} style={styles.container}>{content}</Link> : content;
 };
 
 // Estilos do botão
@@ -38,16 +44,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   button: {
-    backgroundColor: '#98FF98',
     paddingVertical: 12,
     paddingHorizontal: 12,
-    height: 100,
-    width: 170,
-    borderRadius: 5,
-    flexDirection: 'column', // Organiza o ícone e o texto na horizontal
+    flexDirection: 'column', // Ícone e texto na vertical
+    alignItems: 'center',
   },
   icon: {
-    marginRight: 10, // Espaço entre o ícone e o texto
+    marginBottom: 5, // Espaço entre o ícone e o texto
     textAlign: 'center',
   },
   text: {
@@ -58,3 +61,4 @@ const styles = StyleSheet.create({
 });
 
 export default Button;
+  

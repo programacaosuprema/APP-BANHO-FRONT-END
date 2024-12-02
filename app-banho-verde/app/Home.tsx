@@ -1,7 +1,7 @@
 import React from 'react';
 import { Text, View, StyleSheet } from "react-native";
 import Button from "./Button";  // Seu componente Button
-import { useNavigation } from '@react-navigation/native'; 
+import { useNavigation, DrawerActions } from '@react-navigation/native'; 
 import { Image } from 'expo-image';
 import Entypo from '@expo/vector-icons/Entypo';
 
@@ -13,7 +13,7 @@ export default function Home() {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Entypo name="menu" size={40} color="#40E0D0" style={styles.entypo } onPress={() => navigation.openDrawer()} />
+        <Entypo name="menu" size={40} color="#40E0D0" style={styles.entypo } onPress={() => navigation.dispatch(DrawerActions.openDrawer())} />
       </View>
       <View style={styles.profile}>
         <Image 
@@ -30,17 +30,15 @@ export default function Home() {
         
 
         <View style={styles.buttonContainer}>
-          <Button title="SOBRE A CIDADE" icon="city" />
-          <Button title="RESTAURANTE" icon="food-fork-drink" />
+          <Button title="SOBRE A CIDADE" icon="city" href={{ pathname: "./city" }} styleButton={styles.styleButton} textStyle={{color: "#000"}}/>
+          <Button title="RESTAURANTE" icon="food-fork-drink" href={{ pathname: "./restaurant" }} styleButton={styles.styleButton} textStyle={{color: "#000"}}/>
         </View>
         
         <View style={styles.buttonContainer}>
-          <Button title="RIOS E BANHOS" icon="waterfall" />
-          <Button title="HOSPEDAGEM" icon="sleep" />
+          <Button title="RIOS E BANHOS" icon="waterfall"  href={{ pathname: "./dip"}} styleButton={styles.styleButton} textStyle={{color: "#000"}}/>
+          <Button title="HOSPEDAGEM" icon="sleep" href={{ pathname: "./hotel" }} styleButton={styles.styleButton} textStyle={{color: "#000"}} />
         </View>
       </View>
-
-      
     </View>
   );
 }
@@ -89,6 +87,12 @@ const styles = StyleSheet.create({
     flexDirection: 'row',  
     justifyContent: 'space-between',  
     width: '100%',  
-    marginBottom: 10,  
+    padding: 15
+  },
+  styleButton:{
+    backgroundColor: "#98FF98", 
+    width: 150, 
+    height: 120, 
+    borderRadius: 10
   }
 });

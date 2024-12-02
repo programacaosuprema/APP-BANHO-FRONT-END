@@ -1,6 +1,7 @@
 import {Text, View , StyleSheet} from 'react-native';
 import { Image } from 'expo-image';
 import Button from './Button';
+import React from 'react';
 
 export default function Index() {
   return (

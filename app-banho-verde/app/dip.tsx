@@ -4,6 +4,7 @@ import Detail from './Detail';
 import Button from "./Button";  // Seu componente Button
 import axios from 'axios';
 import { useEffect, useState } from 'react';
+import React from 'react';
 
 const API_URL = 'http://localhost:8080/dips/search';
 

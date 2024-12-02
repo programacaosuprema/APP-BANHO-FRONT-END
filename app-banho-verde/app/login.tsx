@@ -28,58 +28,53 @@ export default function LoginScreen() {
         <Ionicons name="chevron-back" size={24} color="#40E0D0" style={{fontSize: 40}}/>
       </Link>
 
-      {/* Nome do app */}
       <Text style={styles.appName}>LAZZ</Text>
 
-      {/* Boas-vindas */}
       <Text style={styles.welcomeText}>Boas vindas!</Text>
 
-      {/* Campo de email */}
       <TextInput
         style={styles.input}
         placeholder="Digite seu email"
         keyboardType="email-address"
         value={email}
         onChangeText={setEmail}
-      />
+       />
 
         <View style={styles.inputContainer}>
-        <TextInput
-            style={styles.inputWithIcon}
-            placeholder="Senha"
-            secureTextEntry={!showPassword}
-            value={password}
-            onChangeText={setPassword}
-        />
-        <TouchableOpacity
-            style={styles.iconContainer}
-            onPress={() => setShowPassword(!showPassword)}
-        >
-            <FontAwesome name={showPassword ? 'eye-slash' : 'eye'} size={20} color="gray"/>
-        </TouchableOpacity>
-    </View>
+            <TextInput
+                style={styles.inputWithIcon}
+                placeholder="Senha"
+                secureTextEntry={!showPassword}
+                value={password}
+                onChangeText={setPassword}
+            />
+            <TouchableOpacity
+                style={styles.iconContainer}
+                onPress={() => setShowPassword(!showPassword)}
+            >
+                <FontAwesome name={showPassword ? 'eye-slash' : 'eye'} size={20} color="gray"/>
+            </TouchableOpacity>
+        </View>
 
-      <Link href={"./esqueceu"} style={styles.link}>
-        <Text >Esqueceu a senha?</Text>
-      </Link>
-      
-     <Button title="LOGIN" onPress={handleLogin} styleButton={{backgroundColor: "#40E0D0", width: "100%", height: 57, borderRadius: 15}} textStyle={{color: "#fff"}}/>
-     
-
-      {/* Login com redes sociais */}
-      <Text style={styles.orText}>ou continue com</Text>
-
-      <View style={styles.socialIcons}>
-        <Link href={"./facebook"}>
-          <FontAwesome name="facebook" size={32} color="#4267B2" />
-       </Link>
-       <Link href={"./google"}>
-          <FontAwesome name="google" size={32} color="#DB4437" />
+        <Link href={"./esqueceu"} style={styles.link}>
+            <Text >Esqueceu a senha?</Text>
         </Link>
-      </View>
+        
+        <Button title="LOGIN" onPress={handleLogin} styleButton={{backgroundColor: "#40E0D0", width: "100%", height: 57, borderRadius: 15}} textStyle={{color: "#fff"}}/>
+        
+        <Text style={styles.orText}>ou continue com</Text>
+
+        <View style={styles.socialIcons}>
+            <Link href={"./facebook"}>
+            <FontAwesome name="facebook" size={32} color="#4267B2" />
+        </Link>
+        <Link href={"./google"}>
+            <FontAwesome name="google" size={32} color="#DB4437" />
+            </Link>
+        </View>
 
 
-     <Text style={styles.registerLink}>Não tem uma conta? <Link href={"./cadastro"} style={{color: "#40E0D0"}}>Cadastre-se</Link></Text>
+        <Text style={styles.registerLink}>Não tem uma conta? <Link href={"./cadastro"} style={{color: "#40E0D0"}}>Cadastre-se</Link></Text>
 
     </View>
   );

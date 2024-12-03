@@ -1,8 +1,14 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet} from 'react-native';
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  StyleSheet,
+} from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { Link, router } from 'expo-router';
-import  Button  from './Button';
+import { useNavigation } from '@react-navigation/native';
+import Button from './Button';
 import { FontAwesome } from '@expo/vector-icons';
 
 export default function LoginScreen() {
@@ -10,23 +16,26 @@ export default function LoginScreen() {
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
 
+  const navigation = useNavigation(); // Hook para usar a navegação
+
   const handleLogin = () => {
     if (!email || !password) {
       alert('Por favor, preencha todos os campos!');
+      return;
     }
 
     if (email !== 'dannielaraujooficial@gmail.com' || password !== '1234') {
-        alert('Email ou senha incorretos!');
-    }else{
-        router.push('./navigation');
+      alert('Email ou senha incorretos!');
+    } else {
+      navigation.navigate('Navigation' as never); // Redireciona para a rota "Navigation"
     }
   };
 
   return (
     <View style={styles.container}>
-      <Link href={"./"} style= {styles.backIcon}>
-        <Ionicons name="chevron-back" size={24} color="#40E0D0" style={{fontSize: 40}}/>
-      </Link>
+      <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backIcon}>
+        <Ionicons name="chevron-back" size={24} color="#40E0D0" style={{ fontSize: 40 }} />
+      </TouchableOpacity>
 
       <Text style={styles.appName}>LAZZ</Text>
 
@@ -38,44 +47,64 @@ export default function LoginScreen() {
         keyboardType="email-address"
         value={email}
         onChangeText={setEmail}
-       />
+      />
 
-        <View style={styles.inputContainer}>
-            <TextInput
-                style={styles.inputWithIcon}
-                placeholder="Senha"
-                secureTextEntry={!showPassword}
-                value={password}
-                onChangeText={setPassword}
-            />
-            <TouchableOpacity
-                style={styles.iconContainer}
-                onPress={() => setShowPassword(!showPassword)}
-            >
-                <FontAwesome name={showPassword ? 'eye-slash' : 'eye'} size={20} color="gray"/>
-            </TouchableOpacity>
-        </View>
+      <View style={styles.inputContainer}>
+        <TextInput
+          style={styles.inputWithIcon}
+          placeholder="Senha"
+          secureTextEntry={!showPassword}
+          value={password}
+          onChangeText={setPassword}
+        />
+        <TouchableOpacity
+          style={styles.iconContainer}
+          onPress={() => setShowPassword(!showPassword)}
+        >
+          <FontAwesome
+            name={showPassword ? 'eye-slash' : 'eye'}
+            size={20}
+            color="gray"
+          />
+        </TouchableOpacity>
+      </View>
 
-        <Link href={"./esqueceu"} style={styles.link}>
-            <Text >Esqueceu a senha?</Text>
-        </Link>
-        
-        <Button title="LOGIN" onPress={handleLogin} styleButton={{backgroundColor: "#40E0D0", width: "100%", height: 57, borderRadius: 15}} textStyle={{color: "#fff"}}/>
-        
-        <Text style={styles.orText}>ou continue com</Text>
+      <TouchableOpacity onPress={() => navigation.navigate('Esqueceu' as never)} style={styles.link}>
+        <Text>Esqueceu a senha?</Text>
+      </TouchableOpacity>
 
-        <View style={styles.socialIcons}>
-            <Link href={"./facebook"}>
-            <FontAwesome name="facebook" size={32} color="#4267B2" />
-        </Link>
-        <Link href={"./google"}>
-            <FontAwesome name="google" size={32} color="#DB4437" />
-            </Link>
-        </View>
+      <Button
+        title="LOGIN"
+        onPress={handleLogin}
+        styleButton={{
+          backgroundColor: '#40E0D0',
+          width: '100%',
+          height: 57,
+          borderRadius: 15,
+        }}
+        textStyle={{ color: '#fff' }}
+      />
 
+      <Text style={styles.orText}>ou continue com</Text>
 
-        <Text style={styles.registerLink}>Não tem uma conta? <Link href={"./cadastro"} style={{color: "#40E0D0"}}>Cadastre-se</Link></Text>
+      <View style={styles.socialIcons}>
+        <TouchableOpacity onPress={() => navigation.navigate('Facebook' as never)}>
+          <FontAwesome name="facebook" size={32} color="#4267B2" />
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => navigation.navigate('Google' as never)}>
+          <FontAwesome name="google" size={32} color="#DB4437" />
+        </TouchableOpacity>
+      </View>
 
+      <Text style={styles.registerLink}>
+        Não tem uma conta?{' '}
+        <Text
+          onPress={() => navigation.navigate('Cadastro' as never)}
+          style={{ color: '#40E0D0' }}
+        >
+          Cadastre-se
+        </Text>
+      </Text>
     </View>
   );
 }
@@ -111,16 +140,11 @@ const styles = StyleSheet.create({
     padding: 12,
     marginBottom: 20,
   },
-  passwordContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
   link: {
     marginTop: 15,
     color: '#40E0D0',
     textAlign: 'right',
     marginBottom: 15,
-   
   },
   orText: {
     textAlign: 'center',
@@ -144,17 +168,16 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#ccc',
     borderRadius: 8,
-    paddingVertical: 12, // Define o padding vertical para calcular altura correta
-    paddingRight: 40, // Espaço suficiente para o ícone
+    paddingVertical: 12,
+    paddingRight: 40,
     paddingLeft: 12,
     fontSize: 16,
   },
-  
   iconContainer: {
     position: 'absolute',
-    right: 10, // Alinha o ícone à direita
-    height: '100%', // Faz o contêiner ocupar a altura total do campo de entrada
-    justifyContent: 'center', // Centraliza o ícone verticalmente dentro do contêiner
-    alignItems: 'center', // Centraliza o ícone horizontalmente no contêiner
+    right: 10,
+    height: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });

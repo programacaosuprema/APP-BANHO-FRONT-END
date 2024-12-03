@@ -12,8 +12,8 @@ export default function Index() {
       />
       <Text style= {{fontSize: 60, alignContent: "center", color: "#40E0D0"}}>LAZZ</Text>
       <Text style={{color: "#40E0D0"}}>Encontre os lugares mais espetaculares</Text>
-          <Button title="LOGIN" href={"./login"} styleButton={{backgroundColor: "#40E0D0", width: 450, height: 57, borderRadius: 15}} textStyle={{color: "#fff"}}/>
-          <Button title="CADASTRO" href={"./cadastro"} styleButton={{backgroundColor: "#fff", width: 450, height: 57, borderRadius: 15, borderColor: "#40E0D0", borderWidth: 2}} textStyle={{color: "#000"}}/>
+      <Button title="LOGIN" route='Login' styleButton={{backgroundColor: "#40E0D0", width: 450, height: 57, borderRadius: 15, marginTop: 20}} textStyle={{color: "#fff"}}/>
+      <Button title="CADASTRO" route='Cadastro' styleButton={{backgroundColor: "#fff", width: 450, height: 57, borderRadius: 15, borderColor: "#40E0D0", borderWidth: 2, marginTop: 20}} textStyle={{color: "#000"}}/>
     </View>
   );
 }
@@ -25,10 +25,10 @@ const styles = StyleSheet.create({
         alignItems: "center",
         justifyContent: "center",
     },
-      imgProfile: {
-          width: "100%",
-          height: 294,
-          borderRadius: 30,
-          alignItems: "center",
-      },
+    imgProfile: {
+        width: "100%",
+        height: 294,
+        borderRadius: 30,
+        alignItems: "center",
+    },
 });

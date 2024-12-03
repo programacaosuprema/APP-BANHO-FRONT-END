@@ -8,7 +8,7 @@ import React from 'react';
 
 const API_URL = 'http://localhost:8080/dips/search';
 
-export default function Dip() {
+export default function DipScreen() {
 
     const [data, setData] = useState<{ name: string; description: string; state: string; city: string; temperature: string; access: string; location: number; images: []}[]>([]);
 

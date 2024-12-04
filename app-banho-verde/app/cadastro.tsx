@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { TextInput, StyleSheet, View, Text, TouchableOpacity, Image } from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { FontAwesome } from "@expo/vector-icons";
@@ -7,6 +7,9 @@ import * as ImagePicker from 'expo-image-picker';
 import { useNavigation } from "@react-navigation/native";
 import Button from "./Button";
 import Toast from 'react-native-toast-message';
+import axios from "axios";
+
+const API_URL = 'http://localhost:8080/clients';
 
 export default function Cadastro() {
     const navigation = useNavigation(); // Hook para usar a navegação
@@ -20,6 +23,9 @@ export default function Cadastro() {
     const [showRepeatPassword, setRepeatShowPassword] = useState(false);
 
     const [selectedImage, setSelectedImage] = useState<string | null>(null);
+    const [imageName, setImageName] = useState<string | null>(null);
+    const [imageType, setImageType] = useState<string | null>(null);
+
 
     const pickImage = async () => {
         const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -36,7 +42,19 @@ export default function Cadastro() {
         });
 
         if (!result.canceled) {
-            setSelectedImage(result.assets[0].uri);
+            const uri = result.assets[0]?.uri;
+            const name = result.assets[0]?.fileName || uri.split('/').pop() || '';
+            const type = name.split('.').pop()?.toLowerCase();
+            const dotIndex = name.lastIndexOf('.');
+            const nameWithoutType = dotIndex !== -1 ? name.slice(0, dotIndex) : name;
+
+            if (type === 'png' || type === 'jpeg' || type === 'jpg') {
+                setSelectedImage(uri);
+                setImageName(nameWithoutType);
+                setImageType(type);
+            } else {
+                feedback('error', 'Formato inválido', 'Por favor, selecione uma imagem PNG ou JPG.');
+            }
         }
     };
 
@@ -77,7 +95,8 @@ export default function Cadastro() {
         symbol: (password: string) => /[!@#$%^&*(),.?":{}|<>]/.test(password),
     };
     
-    const handleLogin = () => {
+    const handleLogin = async () => {
+
         if (
             name === '' ||
             last_name === '' ||
@@ -114,9 +133,44 @@ export default function Cadastro() {
             feedback('error', 'Erro na senha', 'As senhas não coincidem!');
             return;
         }
+
+        const payload = {
+            id: null,
+            firstName: name,
+            lastName: last_name,
+            email: email,
+            phoneNumber: phone_number.replace(/\D/g, ""),
+            image: selectedImage
+                ? {
+                      id: null,
+                      name: imageName,
+                      src: "/images/",
+                      filetype: imageType,
+                  }
+                : null,
+            password: password,
+        };
+
+        alert(JSON.stringify(payload, null, 2));
+    
+        try {
+            const response = await axios.post(API_URL, payload);
+
+            alert('Resposta recebida: ' + JSON.stringify(response, null, 2));
         
-        // Sucesso
-        feedback('success', 'Sucesso', 'Cadastro realizado com sucesso!');
+            if (response.status >= 200 && response.status < 300) {
+                feedback('success', 'Sucesso', 'Cadastro realizado com sucesso!');
+                navigation.navigate('Login' as never); 
+            } else {
+                feedback('error', 'Erro', `Falha no cadastro: ${response.status}`);
+            }
+        } catch (error) {
+            if (axios.isAxiosError(error) && error.response) {
+                feedback('error','Erro',`Ocorreu um erro ao realizar o cadastro: ${error.response.status} - ${error.response.data?.message || 'Erro desconhecido'}`);
+            } else {
+                feedback('error', 'Erro', 'Não foi possível conectar ao servidor.');
+            }
+        }        
     };
 
     return (
@@ -244,7 +298,13 @@ export default function Cadastro() {
                         <Text style={[props.text1Style, styles.text1]}>{props.text1}</Text>
                         <Text style={[props.text2Style, {color: 'red', fontSize: 16}]}>{props.text2}</Text>
                     </View>
-                )
+                ),
+                info: (props) => (
+                    <View style={styles.toastContainer}>
+                        <Text style={[props.text1Style, styles.text1]}>{props.text1}</Text>
+                        <Text style={[props.text2Style, {color: 'black', fontSize: 16}]}>{props.text2}</Text>
+                    </View>
+                ),
             }}
       />
             

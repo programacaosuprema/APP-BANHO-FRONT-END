@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { TextInput, StyleSheet, View, Text, TouchableOpacity, Image } from "react-native";
+import { TextInput, StyleSheet, View, Text, TouchableOpacity, Image, ScrollView } from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { FontAwesome } from "@expo/vector-icons";
 import React from "react";
@@ -8,6 +8,7 @@ import { useNavigation } from "@react-navigation/native";
 import Button from "./Button";
 import Toast from 'react-native-toast-message';
 import axios from "axios";
+import Feedback from "./Feedback";
 
 const API_URL = 'http://localhost:8080/clients';
 
@@ -43,6 +44,8 @@ export default function Cadastro() {
 
         if (!result.canceled) {
             const uri = result.assets[0]?.uri;
+
+            alert(uri)
             const name = result.assets[0]?.fileName || uri.split('/').pop() || '';
             const type = name.split('.').pop()?.toLowerCase();
             const dotIndex = name.lastIndexOf('.');
@@ -150,13 +153,11 @@ export default function Cadastro() {
                 : null,
             password: password,
         };
-
-        alert(JSON.stringify(payload, null, 2));
     
         try {
             const response = await axios.post(API_URL, payload);
 
-            alert('Resposta recebida: ' + JSON.stringify(response, null, 2));
+            //alert('Resposta recebida: ' + JSON.stringify(response, null, 2));
         
             if (response.status >= 200 && response.status < 300) {
                 feedback('success', 'Sucesso', 'Cadastro realizado com sucesso!');
@@ -174,7 +175,7 @@ export default function Cadastro() {
     };
 
     return (
-        <View style={styles.container}>
+        <ScrollView contentContainerStyle={styles.container}>
             <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backIcon}>
                 <Ionicons name="chevron-back" size={24} color="#40E0D0" style={{ fontSize: 40 }} />
             </TouchableOpacity>
@@ -273,9 +274,11 @@ export default function Cadastro() {
                     <FontAwesome name={showRepeatPassword ? 'eye-slash' : 'eye'} size={20} color="gray" />
                 </TouchableOpacity>
             </View>
+            
+            <Text style={{marginBottom: 15, marginLeft: 15}}>Ao se registrar, você concorda com nossos <TouchableOpacity onPress={() => navigation.navigate("Termos" as never)}><span style={{color: "#40E0D0"}}>Termos de uso</span></TouchableOpacity> e a nossa <TouchableOpacity onPress={() => navigation.navigate("Privacidade" as never)}><span style={{color: '#40E0D0'}}>Política de Privacidade</span></TouchableOpacity></Text>
 
             <Button
-                title="CADASTRAR"
+                title="CADASTRE-SE"
                 onPress={handleLogin}
                 styleButton={{
                 backgroundColor: '#40E0D0',
@@ -285,6 +288,18 @@ export default function Cadastro() {
                 }}
                 textStyle={{ color: '#fff' }}
             />
+
+            <Text style={styles.orText}>ou continue com</Text>
+
+            <View style={styles.socialIcons}>
+            <TouchableOpacity onPress={() => navigation.navigate('Facebook' as never)}>
+                <FontAwesome name="facebook" size={32} color="#4267B2" />
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => navigation.navigate('Google' as never)}>
+                <FontAwesome name="google" size={32} color="#DB4437" />
+            </TouchableOpacity>
+            </View>
+
             <Toast
                 config={{
                 success: (props) => (
@@ -308,13 +323,13 @@ export default function Cadastro() {
             }}
       />
             
-        </View>
+        </ScrollView>
     );
 }
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
+        flexGrow: 1,
         backgroundColor: '#fff',
         padding: 36,
         paddingTop: 60,
@@ -403,5 +418,16 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         color: '#000',
         textAlign: 'center',
-    }
+    },
+    orText: {
+        textAlign: 'center',
+        marginBottom: 10,
+        color: '#40E0D0',
+        padding: 20,
+      },
+      socialIcons: {
+        flexDirection: 'row',
+        justifyContent: 'space-around',
+        marginBottom: 20,
+      },
 });

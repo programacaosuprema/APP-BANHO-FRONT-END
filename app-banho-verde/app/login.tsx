@@ -10,6 +10,10 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import { useNavigation } from '@react-navigation/native';
 import Button from './Button';
 import { FontAwesome } from '@expo/vector-icons';
+import axios from 'axios';
+import Toast from 'react-native-toast-message';
+
+const API_URL = 'http://localhost:8080/clients/authentication';
 
 export default function LoginScreen() {
   const [email, setEmail] = useState('');
@@ -18,17 +22,48 @@ export default function LoginScreen() {
 
   const navigation = useNavigation(); // Hook para usar a navegação
 
-  const handleLogin = () => {
+  const feedback = (type: string, text1: string, text2: string) => {
+    Toast.show({
+        type: type,
+        position: 'top',
+        text1: text1,
+        text2: text2,
+        visibilityTime: 4000,
+        autoHide: true,
+    })
+  };
+
+  const handleLogin = async () => {
     if (!email || !password) {
       alert('Por favor, preencha todos os campos!');
       return;
     }
 
-    if (email !== 'dannielaraujooficial@gmail.com' || password !== '1234') {
-      alert('Email ou senha incorretos!');
-    } else {
-      navigation.navigate('Navigation' as never); // Redireciona para a rota "Navigation"
-    }
+    const payload = {
+      id: null,
+      email: email,
+      password: password,
+      client_id: null,
+    };
+    try {
+      const response = await axios.post(API_URL, payload);
+
+      //alert('Resposta recebida: ' + JSON.stringify(response, null, 2));
+
+      if (response.status >= 200 && response.status < 300) {
+          feedback('success', 'Login', 'Login realizado com sucesso!');
+          navigation.navigate('Home' as never); 
+      } else {
+          feedback('error', 'Erro', `Falha no Login: ${response.status}`);
+      }
+    } catch (error) {
+        if (axios.isAxiosError(error) && error.response) {
+            feedback('error', 'Erro', `Ocorreu um erro ao realizar o login: ${error.response.status} - ${error.response.data?.message || 'Erro desconhecido'}`);
+        } else {
+            feedback('error', 'Erro', 'Não foi possível conectar ao servidor.');
+        }
+    }        
+    
   };
 
   return (
@@ -105,6 +140,28 @@ export default function LoginScreen() {
           Cadastre-se
         </Text>
       </Text>
+      <Toast
+        config={{
+          success: (props) => (
+              <View style={styles.toastContainer}>
+                  <Text style={[props.text1Style, styles.text1]}>{props.text1}</Text>
+                  <Text style={[props.text2Style, {color: '#40E0D0', fontSize: 16}]}>{props.text2}</Text>
+              </View>
+          ),
+          error: (props) => (
+              <View style={styles.toastContainer}>
+                  <Text style={[props.text1Style, styles.text1]}>{props.text1}</Text>
+                  <Text style={[props.text2Style, {color: 'red', fontSize: 16}]}>{props.text2}</Text>
+              </View>
+          ),
+          info: (props) => (
+              <View style={styles.toastContainer}>
+                  <Text style={[props.text1Style, styles.text1]}>{props.text1}</Text>
+                  <Text style={[props.text2Style, {color: 'black', fontSize: 16}]}>{props.text2}</Text>
+              </View>
+          ),
+        }}
+      />
     </View>
   );
 }
@@ -149,7 +206,7 @@ const styles = StyleSheet.create({
   orText: {
     textAlign: 'center',
     marginBottom: 10,
-    color: '#000',
+    color: '#40E0D0',
     padding: 20,
   },
   socialIcons: {
@@ -180,4 +237,17 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  toastContainer: {
+      padding: 16,
+      backgroundColor: '#fff', 
+      borderRadius: 8,
+      borderColor: "#000",
+      borderWidth: 1,
+  },
+      text1: {
+      fontSize: 25, // Tamanho da fonte do texto principal
+      fontWeight: 'bold',
+      color: '#000',
+      textAlign: 'center',
+  }
 });

@@ -8,7 +8,6 @@ import { useNavigation } from "@react-navigation/native";
 import Button from "./Button";
 import Toast from 'react-native-toast-message';
 import axios from "axios";
-import Feedback from "./Feedback";
 
 const API_URL = 'http://localhost:8080/clients';
 
@@ -156,9 +155,6 @@ export default function Cadastro() {
     
         try {
             const response = await axios.post(API_URL, payload);
-
-            //alert('Resposta recebida: ' + JSON.stringify(response, null, 2));
-        
             if (response.status >= 200 && response.status < 300) {
                 feedback('success', 'Sucesso', 'Cadastro realizado com sucesso!');
                 navigation.navigate('Login' as never); 

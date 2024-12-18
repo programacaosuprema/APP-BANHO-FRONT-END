@@ -8,9 +8,25 @@ import React from 'react';
 
 const API_URL = 'http://localhost:8080/dips/search';
 
+//.jpg
+
 export default function DipScreen() {
 
-    const [data, setData] = useState<{ name: string; description: string; state: string; city: string; temperature: string; access: string; location: number; images: []}[]>([]);
+    const [data, setData] = useState<{
+        name: string;
+        description: string;
+        state: string;
+        city: string;
+        temperature: number; // Era string, mas o dado é numérico
+        access: string;
+        location: string; // Era number, mas o dado é uma string
+        images: {
+          id: null | number;
+          name: string;
+          src: string;
+          filetype: string;
+        }[];
+      }[]>([]);
 
     useEffect(() => {
         fetchData();
@@ -26,14 +42,17 @@ export default function DipScreen() {
     };
 
     return (
-        <View>
+        <ScrollView>
             {data.map((dip, index) => (
                 <ScrollView style={styles.container} key={index}>
-            
-                <Image 
-                    style={styles.imgProfile} 
-                    source={{ uri: "http://www.publicdomainpictures.net/pictures/30000/velka/fast-flowing-river.jpg" }}
-                />
+                {dip.images.map((image, index) => (
+                    <Image 
+                        key={index}
+                        style={styles.imgProfile} 
+                        source={{ uri: image.src.concat(image.name).concat('.').concat(image.filetype)}}
+                    />
+                ))}
+
                 <View style={styles.containerInformation}>
                     <View style={styles.information}>
                         <Text style={{ fontFamily: 'Montserrat_400Bold', fontSize: 20 }}>VISÃO GERAL</Text>
@@ -49,10 +68,10 @@ export default function DipScreen() {
                         <Text style={{textAlign: 'justify', marginTop:10}}>{dip.description}</Text>
                     </View>
                 </View>
-                <Button title="QUERO CONHECER" styleButton={{backgroundColor: "#FFED8F", width: "100%", height: 50, borderRadius: 10}} />
+                <Button title="QUERO CONHECER" styleButton={{backgroundColor: "#FFED8F", width: "100%", height: 50, borderRadius: 10, marginTop: 15}} />
             </ScrollView>
             ))}
-        </View>
+        </ScrollView>
     );
 }
 

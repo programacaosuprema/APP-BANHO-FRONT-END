@@ -1,3 +1,4 @@
+// Button.tsx
 import React from "react";
 import {
   Text,
@@ -7,12 +8,13 @@ import {
   TextStyle,
 } from "react-native";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, NavigationProp } from "@react-navigation/native";
+import { RootStackParamList } from '../types'; // Ajuste o caminho conforme necessário
 
 // Interface para as propriedades do botão
 interface ButtonProps {
   title?: string;
-  route?: string; // Nome da rota de navegação
+  route?: keyof RootStackParamList; // Nome da rota de navegação
   icon?: React.ComponentProps<typeof MaterialCommunityIcons>["name"];
   styleButton?: ViewStyle;
   textStyle?: TextStyle;
@@ -27,7 +29,7 @@ const Button: React.FC<ButtonProps> = ({
   styleButton,
   onPress,
 }) => {
-  const navigation = useNavigation();
+  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
   // Função de clique
   const handlePress = () => {
@@ -73,6 +75,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     textAlign: "center",
   },
-});
+});  
 
 export default Button;

@@ -1,18 +1,40 @@
 import React from 'react';
-import { Text, View, StyleSheet } from "react-native";
+import { Text, View, StyleSheet, ActivityIndicator } from "react-native";
 import Button from "./Button"; // Seu componente Button
-import { useNavigation, DrawerActions } from '@react-navigation/native'; 
+import { useNavigation, DrawerActions, RouteProp } from '@react-navigation/native'; 
 import { Image } from 'expo-image';
 import Entypo from '@expo/vector-icons/Entypo';
+import { useEffect, useState } from 'react';
+import {fetchClientData} from './services/api'; // Função que busca os dados do cliente
 
 const blurhash =
   '|rF?hV%2WCj[ayj[a|j[az_NaeWBj@ayfRayfQfQM{M|azj[azf6fQfQfQIpWXofj[ayj[j[fQayWCoeoeaya}j[ayfQa{oLj?j[WVj[ayayj[fQoff7azayj[ayj[j[ayofayayayj[fQj[ayayj[ayfjj[j[ayjuayj[';
 
 export default function HomeScreen() {
-  const navigation = useNavigation(); 
+  const navigation = useNavigation();
+  const [client, setClient] = useState<{ firstName: string; lastName: string } | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const loadClient = async () => {
+      console.log("🔄 Iniciando busca dos dados do cliente...");
+      const data = await fetchClientData();
+      
+      if (data) {
+        console.log("✅ Cliente recebido com sucesso:", data);
+        // Agora você pode acessar 'firstName' e 'lastName'
+        setClient(data);  // Atribui todos os dados recebidos ao estado
+      } else {
+        console.error("❌ Nenhum dado de cliente recebido.");
+      }
+      
+      setLoading(false);
+    };
+
+    loadClient();
+  }, []);
   return (
     <View style={styles.container}>
-      {/* Menu Header */}
       <View style={styles.header}>
         <Entypo
           name="menu"
@@ -23,7 +45,6 @@ export default function HomeScreen() {
         />
       </View>
 
-      {/* Profile Section */}
       <View style={styles.profile}>
         <Image 
           style={styles.imgProfile} 
@@ -32,10 +53,9 @@ export default function HomeScreen() {
           contentFit="cover"
           transition={1000}
         />
-        <Text style={styles.greetingText}>Olá, Amanda</Text>
+        <Text style={styles.greetingText}>Olá, {client?.firstName}</Text>
       </View>
 
-      {/* Options Section */}
       <View style={styles.options}>
         <Text style={styles.sectionTitle}>PARA VOCÊ</Text>
 
@@ -148,5 +168,5 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     elevation: 3,
-  },
+  }
 });

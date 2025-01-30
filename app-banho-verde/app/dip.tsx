@@ -1,8 +1,10 @@
-import { Text, StyleSheet, View, ScrollView } from 'react-native';
+import { Text, StyleSheet, View, ScrollView, TouchableOpacity } from 'react-native';
 import { Image } from 'expo-image';
 import Detail from './Detail';
 import Button from "./Button";  // Seu componente Button
 import axios from 'axios';
+import { Ionicons } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native';
 import { useEffect, useState } from 'react';
 import React from 'react';
 
@@ -11,7 +13,7 @@ const API_URL = 'http://localhost:8080/dips/search';
 //.jpg
 
 export default function DipScreen() {
-
+    const navigation = useNavigation();
     const [data, setData] = useState<{
         name: string;
         description: string;
@@ -45,6 +47,7 @@ export default function DipScreen() {
         <ScrollView>
             {data.map((dip, index) => (
                 <ScrollView style={styles.container} key={index}>
+                
                 {dip.images.map((image, index) => (
                     <Image 
                         key={index}
@@ -52,7 +55,9 @@ export default function DipScreen() {
                         source={{ uri: image.src.concat(image.name).concat('.').concat(image.filetype)}}
                     />
                 ))}
-
+                <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backIcon}>
+                    <Ionicons name="chevron-back" size={24} color="#40E0D0" style={{ fontSize: 40 }} />
+                </TouchableOpacity>
                 <View style={styles.containerInformation}>
                     <View style={styles.information}>
                         <Text style={{ fontFamily: 'Montserrat_400Bold', fontSize: 20 }}>VISÃO GERAL</Text>
@@ -80,6 +85,11 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: '#F0F0F0',
         padding: 36,
+    },
+    backIcon: {
+        position: 'absolute',
+        top: 40,
+        left: 20,
     },
     imgProfile: {
         width: "100%",

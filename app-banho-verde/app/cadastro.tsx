@@ -9,9 +9,10 @@ import Button from "./Button";
 import Toast from 'react-native-toast-message';
 import axios from "axios";
 
-const API_URL = 'http://localhost:8080/clients';
+const API_URL = 'http://localhost:8080/clients/register';
 
-export default function Cadastro() {
+export default function CadastroScreen() {
+
     const navigation = useNavigation(); // Hook para usar a navegação
     const [name, setName] = useState('');
     const [last_name, setLastName] = useState('');
@@ -152,9 +153,12 @@ export default function Cadastro() {
                 : null,
             password: password,
         };
-    
+       
         try {
-            const response = await axios.post(API_URL, payload);
+            const response = await axios.post(API_URL, payload, { withCredentials: true });
+            
+            alert("Resposta do servidor: " +  response); // Log da resposta completa
+        
             if (response.status >= 200 && response.status < 300) {
                 feedback('success', 'Sucesso', 'Cadastro realizado com sucesso!');
                 navigation.navigate('Login' as never); 
@@ -162,12 +166,17 @@ export default function Cadastro() {
                 feedback('error', 'Erro', `Falha no cadastro: ${response.status}`);
             }
         } catch (error) {
+            alert("Erro ao chamar API: " +  error);
+        
             if (axios.isAxiosError(error) && error.response) {
-                feedback('error','Erro',`Ocorreu um erro ao realizar o cadastro: ${error.response.status} - ${error.response.data?.message || 'Erro desconhecido'}`);
+                alert("Detalhes do erro: " + error.response.data);
+                feedback('error', 'Erro', `Ocorreu um erro: ${error.response.status} - ${error.response.data?.message || 'Erro desconhecido'}`);
             } else {
                 feedback('error', 'Erro', 'Não foi possível conectar ao servidor.');
             }
-        }        
+        }
+            
+            
     };
 
     return (

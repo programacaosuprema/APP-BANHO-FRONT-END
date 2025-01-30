@@ -1,3 +1,4 @@
+// LoginScreen.tsx
 import React, { useState } from 'react';
 import {
   View,
@@ -7,30 +8,41 @@ import {
   StyleSheet,
 } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { useNavigation } from '@react-navigation/native';
 import Button from './Button';
 import { FontAwesome } from '@expo/vector-icons';
 import axios from 'axios';
 import Toast from 'react-native-toast-message';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { StackNavigationProp } from '@react-navigation/stack';
+import { RootStackParamList } from '../types';
+import { useNavigation } from '@react-navigation/native';
 
-const API_URL = 'http://localhost:8080/clients/authentication';
 
-export default function LoginScreen() {
+type LoginScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Login'>;
+
+interface LoginProps {
+  navigation: LoginScreenNavigationProp;
+}
+
+const API_URL = 'http://localhost:8080/auth/login';
+
+export default function LoginScreen({ navigation }: LoginProps) {
+
+  const nav = useNavigation();
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
 
-  const navigation = useNavigation(); // Hook para usar a navegação
-
   const feedback = (type: string, text1: string, text2: string) => {
     Toast.show({
-        type: type,
-        position: 'top',
-        text1: text1,
-        text2: text2,
-        visibilityTime: 4000,
-        autoHide: true,
-    })
+      type: type,
+      position: 'top',
+      text1: text1,
+      text2: text2,
+      visibilityTime: 4000,
+      autoHide: true,
+    });
   };
 
   const handleLogin = async () => {
@@ -40,35 +52,30 @@ export default function LoginScreen() {
     }
 
     const payload = {
-      id: null,
-      email: email,
+      login: email,
       password: password,
-      client_id: null,
     };
     try {
       const response = await axios.post(API_URL, payload);
-
-      //alert('Resposta recebida: ' + JSON.stringify(response, null, 2));
-
       if (response.status >= 200 && response.status < 300) {
-          feedback('success', 'Login', 'Login realizado com sucesso!');
-          navigation.navigate('Home' as never); 
+        await AsyncStorage.setItem('token', response.data.token); //salvando token no AsyncStorage
+        feedback('success', 'Login', 'Login realizado com sucesso!'); 
+        nav.navigate('Home' as never); // Navega para a tela Home
       } else {
-          feedback('error', 'Erro', `Falha no Login: ${response.status}`);
+        feedback('error', 'Erro', `Falha no Login: ${response.status} - ${response.data?.message || 'Erro desconhecido'}`);
       }
     } catch (error) {
-        if (axios.isAxiosError(error) && error.response) {
-            feedback('error', 'Erro', `Ocorreu um erro ao realizar o login: ${error.response.status} - ${error.response.data?.message || 'Erro desconhecido'}`);
-        } else {
-            feedback('error', 'Erro', 'Não foi possível conectar ao servidor.');
-        }
+      if (axios.isAxiosError(error) && error.response) {
+        feedback('error', 'Erro', `Ocorreu um erro ao realizar o login: ${error.response.status} - ${error.response.data?.message || 'Erro desconhecido'}`);
+      } else {
+        feedback('error', 'Erro', 'Não foi possível conectar ao servidor.');
+      }
     }        
-    
   };
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backIcon}>
+      <TouchableOpacity onPress={() => nav.goBack()} style={styles.backIcon}>
         <Ionicons name="chevron-back" size={24} color="#40E0D0" style={{ fontSize: 40 }} />
       </TouchableOpacity>
 
@@ -134,7 +141,7 @@ export default function LoginScreen() {
       <Text style={styles.registerLink}>
         Não tem uma conta?{' '}
         <Text
-          onPress={() => navigation.navigate('Cadastro' as never)}
+          onPress={() => navigation.navigate('Cadastro')}
           style={{ color: '#40E0D0' }}
         >
           Cadastre-se
@@ -143,22 +150,22 @@ export default function LoginScreen() {
       <Toast
         config={{
           success: (props) => (
-              <View style={styles.toastContainer}>
-                  <Text style={[props.text1Style, styles.text1]}>{props.text1}</Text>
-                  <Text style={[props.text2Style, {color: '#40E0D0', fontSize: 16}]}>{props.text2}</Text>
-              </View>
+            <View style={styles.toastContainer}>
+              <Text style={[props.text1Style, styles.text1]}>{props.text1}</Text>
+              <Text style={[props.text2Style, {color: '#40E0D0', fontSize: 16}]}>{props.text2}</Text>
+            </View>
           ),
           error: (props) => (
-              <View style={styles.toastContainer}>
-                  <Text style={[props.text1Style, styles.text1]}>{props.text1}</Text>
-                  <Text style={[props.text2Style, {color: 'red', fontSize: 16}]}>{props.text2}</Text>
-              </View>
+            <View style={styles.toastContainer}>
+              <Text style={[props.text1Style, styles.text1]}>{props.text1}</Text>
+              <Text style={[props.text2Style, {color: 'red', fontSize: 16}]}>{props.text2}</Text>
+            </View>
           ),
           info: (props) => (
-              <View style={styles.toastContainer}>
-                  <Text style={[props.text1Style, styles.text1]}>{props.text1}</Text>
-                  <Text style={[props.text2Style, {color: 'black', fontSize: 16}]}>{props.text2}</Text>
-              </View>
+            <View style={styles.toastContainer}>
+              <Text style={[props.text1Style, styles.text1]}>{props.text1}</Text>
+              <Text style={[props.text2Style, {color: 'black', fontSize: 16}]}>{props.text2}</Text>
+            </View>
           ),
         }}
       />
@@ -238,16 +245,16 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   toastContainer: {
-      padding: 16,
-      backgroundColor: '#fff', 
-      borderRadius: 8,
-      borderColor: "#000",
-      borderWidth: 1,
+    padding: 16,
+    backgroundColor: '#fff', 
+    borderRadius: 8,
+    borderColor: "#000",
+    borderWidth: 1,
   },
-      text1: {
-      fontSize: 25, // Tamanho da fonte do texto principal
-      fontWeight: 'bold',
-      color: '#000',
-      textAlign: 'center',
+  text1: {
+    fontSize: 25, // Tamanho da fonte do texto principal
+    fontWeight: 'bold',
+    color: '#000',
+    textAlign: 'center',
   }
 });

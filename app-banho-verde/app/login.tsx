@@ -13,22 +13,14 @@ import { FontAwesome } from '@expo/vector-icons';
 import axios from 'axios';
 import Toast from 'react-native-toast-message';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../types';
-import { useNavigation } from '@react-navigation/native';
-
-
-type LoginScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Login'>;
-
-interface LoginProps {
-  navigation: LoginScreenNavigationProp;
-}
+import { NavigationProp, useNavigation } from '@react-navigation/native';
 
 const API_URL = 'http://localhost:8080/auth/login';
 
-export default function LoginScreen({ navigation }: LoginProps) {
+export default function LoginScreen() {
 
-  const nav = useNavigation();
+    const nav = useNavigation<NavigationProp<RootStackParamList>>();
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -111,7 +103,7 @@ export default function LoginScreen({ navigation }: LoginProps) {
         </TouchableOpacity>
       </View>
 
-      <TouchableOpacity onPress={() => navigation.navigate('Esqueceu' as never)} style={styles.link}>
+      <TouchableOpacity onPress={() => nav.navigate('Esqueceu' as never)} style={styles.link}>
         <Text>Esqueceu a senha?</Text>
       </TouchableOpacity>
 
@@ -130,22 +122,22 @@ export default function LoginScreen({ navigation }: LoginProps) {
       <Text style={styles.orText}>ou continue com</Text>
 
       <View style={styles.socialIcons}>
-        <TouchableOpacity onPress={() => navigation.navigate('Facebook' as never)}>
+        <TouchableOpacity onPress={() => nav.navigate('Facebook' as never)}>
           <FontAwesome name="facebook" size={32} color="#4267B2" />
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => navigation.navigate('Google' as never)}>
+        <TouchableOpacity onPress={() => nav.navigate('Google' as never)}>
           <FontAwesome name="google" size={32} color="#DB4437" />
         </TouchableOpacity>
       </View>
 
       <Text style={styles.registerLink}>
         Não tem uma conta?{' '}
-        <Text
-          onPress={() => navigation.navigate('Cadastro')}
-          style={{ color: '#40E0D0' }}
-        >
-          Cadastre-se
-        </Text>
+        <Button 
+          title="Cadastre-se" 
+          route="Cadastro"  // Passa a rota como parâmetro
+          styleButton={{ backgroundColor: '#fff' }}
+          textStyle={{ color: '#40E0D0' }}
+        />
       </Text>
       <Toast
         config={{

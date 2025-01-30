@@ -4,7 +4,7 @@ import { View , Text} from "react-native";
 export default function RestaurantScreen() {
     return(
             <View >
-                <Text>City</Text>
+                <Text>RESTAURANT</Text>
             </View>
         )
 }

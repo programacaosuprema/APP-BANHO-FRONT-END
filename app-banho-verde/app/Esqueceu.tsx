@@ -4,7 +4,7 @@ import { View, Text } from "react-native";
 export default function EsqueceuScreen() {
     return(
             <View >
-                <Text>City</Text>
+                <Text>ESQUECEU</Text>
             </View>
         )
 }

@@ -8,6 +8,7 @@ import { useNavigation } from "@react-navigation/native";
 import Button from "./Button";
 import Toast from 'react-native-toast-message';
 import axios from "axios";
+import Loading from "../app/utils/loader";
 
 const API_URL = 'http://localhost:8080/clients/register';
 
@@ -44,8 +45,6 @@ export default function CadastroScreen() {
 
         if (!result.canceled) {
             const uri = result.assets[0]?.uri;
-
-            alert(uri)
             const name = result.assets[0]?.fileName || uri.split('/').pop() || '';
             const type = name.split('.').pop()?.toLowerCase();
             const dotIndex = name.lastIndexOf('.');
@@ -97,6 +96,8 @@ export default function CadastroScreen() {
         number: (password: string) => /[0-9]/.test(password),
         symbol: (password: string) => /[!@#$%^&*(),.?":{}|<>]/.test(password),
     };
+
+    const [loading, setLoading] = useState(false); // Estado para o loading
     
     const handleLogin = async () => {
 
@@ -155,9 +156,9 @@ export default function CadastroScreen() {
         };
        
         try {
+
+            setLoading(true); // Ativa o loading antes da requisição
             const response = await axios.post(API_URL, payload, { withCredentials: true });
-            
-            alert("Resposta do servidor: " +  response); // Log da resposta completa
         
             if (response.status >= 200 && response.status < 300) {
                 feedback('success', 'Sucesso', 'Cadastro realizado com sucesso!');
@@ -169,11 +170,12 @@ export default function CadastroScreen() {
             alert("Erro ao chamar API: " +  error);
         
             if (axios.isAxiosError(error) && error.response) {
-                alert("Detalhes do erro: " + error.response.data);
                 feedback('error', 'Erro', `Ocorreu um erro: ${error.response.status} - ${error.response.data?.message || 'Erro desconhecido'}`);
             } else {
                 feedback('error', 'Erro', 'Não foi possível conectar ao servidor.');
             }
+        }finally{
+            setLoading(false); // Desativa o loading após a requisição
         }
             
             
@@ -181,6 +183,8 @@ export default function CadastroScreen() {
 
     return (
         <ScrollView contentContainerStyle={styles.container}>
+            <Loading visible={loading} /> {/* Componente de Loading */}
+            
             <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backIcon}>
                 <Ionicons name="chevron-back" size={24} color="#40E0D0" style={{ fontSize: 40 }} />
             </TouchableOpacity>

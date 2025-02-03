@@ -15,6 +15,7 @@ import Toast from 'react-native-toast-message';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { RootStackParamList } from '../types';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
+import Loading from "../app/utils/loader";
 
 const API_URL = 'http://localhost:8080/auth/login';
 
@@ -25,6 +26,7 @@ export default function LoginScreen() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false); // Estado para o loading
 
   const feedback = (type: string, text1: string, text2: string) => {
     Toast.show({
@@ -48,6 +50,7 @@ export default function LoginScreen() {
       password: password,
     };
     try {
+      setLoading(true); // Ativa o loading antes da requisição
       const response = await axios.post(API_URL, payload);
       if (response.status >= 200 && response.status < 300) {
         await AsyncStorage.setItem('token', response.data.token); //salvando token no AsyncStorage
@@ -62,11 +65,14 @@ export default function LoginScreen() {
       } else {
         feedback('error', 'Erro', 'Não foi possível conectar ao servidor.');
       }
-    }        
+    }finally{
+      setLoading(false); // Desativa o loading após a requisição
+    }    
   };
 
   return (
     <View style={styles.container}>
+      <Loading visible={loading} /> {/* Componente de loading */}
       <TouchableOpacity onPress={() => nav.goBack()} style={styles.backIcon}>
         <Ionicons name="chevron-back" size={24} color="#40E0D0" style={{ fontSize: 40 }} />
       </TouchableOpacity>

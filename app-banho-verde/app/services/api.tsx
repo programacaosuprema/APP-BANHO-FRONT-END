@@ -15,7 +15,6 @@ export const fetchClientData = async () => {
         "Authorization": `Bearer ${token}`, // Token no cabeçalho
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ token: token }), // Corpo da requisição
     });
 
     if (!response.ok) {

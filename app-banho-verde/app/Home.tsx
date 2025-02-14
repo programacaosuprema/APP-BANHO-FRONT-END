@@ -5,7 +5,8 @@ import { useNavigation, DrawerActions, RouteProp } from '@react-navigation/nativ
 import { Image } from 'expo-image';
 import Entypo from '@expo/vector-icons/Entypo';
 import { useEffect, useState } from 'react';
-import {fetchClientData} from './services/api'; // Função que busca os dados do cliente
+import {fetchClientData} from './services/api'; 
+import Loading from "../app/utils/loader";
 
 const blurhash =
   '|rF?hV%2WCj[ayj[a|j[az_NaeWBj@ayfRayfQfQM{M|azj[azf6fQfQfQIpWXofj[ayj[j[fQayWCoeoeaya}j[ayfQa{oLj?j[WVj[ayayj[fQoff7azayj[ayj[j[ayofayayayj[fQj[ayayj[ayfjj[j[ayjuayj[';
@@ -22,8 +23,8 @@ export default function HomeScreen() {
       
       if (data) {
         console.log("✅ Cliente recebido com sucesso:", data);
-        // Agora você pode acessar 'firstName' e 'lastName'
-        setClient(data);  // Atribui todos os dados recebidos ao estado
+
+        setClient(data);  
       } else {
         console.error("❌ Nenhum dado de cliente recebido.");
       }
@@ -35,6 +36,7 @@ export default function HomeScreen() {
   }, []);
   return (
     <View style={styles.container}>
+      <Loading visible={loading} /> {/* Componente de loading */}
       <View style={styles.header}>
         <Entypo
           name="menu"

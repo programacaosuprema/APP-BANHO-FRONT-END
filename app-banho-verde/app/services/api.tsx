@@ -9,8 +9,8 @@ export const fetchClientData = async () => {
   }
 
   try {
-    const response = await fetch("http://localhost:8080/clients/token", {
-      method: "POST",
+    const response = await fetch("http://localhost:8080/clients/search", {
+      method: "GET",
       headers: {
         "Authorization": `Bearer ${token}`, // Token no cabeçalho
         "Content-Type": "application/json",

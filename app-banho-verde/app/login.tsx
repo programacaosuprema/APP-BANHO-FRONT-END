@@ -21,12 +21,12 @@ const API_URL = 'http://localhost:8080/auth/login';
 
 export default function LoginScreen() {
 
-    const nav = useNavigation<NavigationProp<RootStackParamList>>();
+  const nav = useNavigation<NavigationProp<RootStackParamList>>();
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const [loading, setLoading] = useState(false); // Estado para o loading
+  const [loading, setLoading] = useState(false); 
 
   const feedback = (type: string, text1: string, text2: string) => {
     Toast.show({

@@ -7,6 +7,7 @@ import {
 } from 'react-native';
 import { Image } from 'expo-image';
 import Button from './Button';
+import Slider from "@/components/ImageCarousel";
 
 export default function Index() {
 
@@ -82,3 +83,5 @@ const styles = StyleSheet.create({
     color: "#000",
   },
 });
+
+

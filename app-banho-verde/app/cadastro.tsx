@@ -9,6 +9,7 @@ import Button from "./Button";
 import Toast from 'react-native-toast-message';
 import axios from "axios";
 import Loading from "../app/utils/loader";
+import { APP_NAME } from "./config/config";
 
 const API_URL = 'http://localhost:8080/clients/register';
 
@@ -189,8 +190,8 @@ export default function CadastroScreen() {
                 <Ionicons name="chevron-back" size={24} color="#40E0D0" style={{ fontSize: 40 }} />
             </TouchableOpacity>
 
-            <Text style={styles.appName}>LAZZ</Text>
-            <Text style={styles.welcomeText}>Faça parte da comunidade do LAZZ!</Text>
+            <Text style={styles.appName}>{APP_NAME}</Text>
+            <Text style={styles.welcomeText}>Faça parte da comunidade do {APP_NAME}!</Text>
 
             <View style={styles.photoWrapper}>
                 <TouchableOpacity style={styles.photoContainer} onPress={pickImage}>

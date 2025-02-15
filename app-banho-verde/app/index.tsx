@@ -1,13 +1,14 @@
 // Index.tsx
-import React from "react";
+import React, { useState } from "react";
 import {
   Text,
   View,
   StyleSheet,
 } from 'react-native';
 import { Image } from 'expo-image';
-import Button from './Button';
-import Slider from "@/components/ImageCarousel";
+import Button from './Button' ;
+import { APP_NAME } from "./config/config";
+
 
 export default function Index() {
 
@@ -17,7 +18,7 @@ export default function Index() {
         style={styles.imgProfile} 
         source={{ uri: "https://madeinweb.com.br/wp-content/uploads/2019/01/importancia-da-identidade-visual-de-um-aplicativo-2.png" }}
       />
-      <Text style={styles.appName}>LAZZ</Text>
+      <Text style={styles.appName}>{APP_NAME}</Text>
       <Text style={styles.tagline}>Encontre os lugares mais espetaculares</Text>
       <Button 
         title="LOGIN" 

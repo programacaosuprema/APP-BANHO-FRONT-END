@@ -16,6 +16,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { RootStackParamList } from '../types';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import Loading from "../app/utils/loader";
+import AlertModal from '@/components/AlertModal';
+import { APP_NAME } from "./config/config";
 
 const API_URL = 'http://localhost:8080/auth/login';
 
@@ -28,16 +30,6 @@ export default function LoginScreen() {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false); 
 
-  const feedback = (type: string, text1: string, text2: string) => {
-    Toast.show({
-      type: type,
-      position: 'top',
-      text1: text1,
-      text2: text2,
-      visibilityTime: 4000,
-      autoHide: true,
-    });
-  };
 
   const handleLogin = async () => {
     if (!email || !password) {
@@ -54,16 +46,22 @@ export default function LoginScreen() {
       const response = await axios.post(API_URL, payload);
       if (response.status >= 200 && response.status < 300) {
         await AsyncStorage.setItem('token', response.data.token); //salvando token no AsyncStorage
-        feedback('success', 'Login', 'Login realizado com sucesso!'); 
-        nav.navigate('Home' as never); // Navega para a tela Home
+        
+        <AlertModal title="Login" message="Login realizado com sucesso!" type="success"></AlertModal>
+        nav.navigate('Navigation' as never); // Navega para a tela Home
       } else {
-        feedback('error', 'Erro', `Falha no Login: ${response.status} - ${response.data?.message || 'Erro desconhecido'}`);
+
+        const msg = `Falha no Login: ${response.status} - ${response.data?.message || 'Erro desconhecido'}`;
+ 
+        <AlertModal title="Erro" message={msg} type="error"></AlertModal>
       }
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
-        feedback('error', 'Erro', `Ocorreu um erro ao realizar o login: ${error.response.status} - ${error.response.data?.message || 'Erro desconhecido'}`);
+        const msg = `Ocorreu um erro ao realizar o login: ${error.response.status} - ${error.response.data?.message || 'Erro desconhecido'}`;
+        <AlertModal title="Erro" message={msg} type="error"></AlertModal>
+
       } else {
-        feedback('error', 'Erro', 'Não foi possível conectar ao servidor.');
+        <AlertModal title="Erro" message="Não foi possível conectar no servidor" type="error"></AlertModal>
       }
     }finally{
       setLoading(false); // Desativa o loading após a requisição
@@ -77,7 +75,7 @@ export default function LoginScreen() {
         <Ionicons name="chevron-back" size={24} color="#40E0D0" style={{ fontSize: 40 }} />
       </TouchableOpacity>
 
-      <Text style={styles.appName}>LAZZ</Text>
+      <Text style={styles.appName}>{APP_NAME}</Text>
 
       <Text style={styles.welcomeText}>Boas vindas!</Text>
 

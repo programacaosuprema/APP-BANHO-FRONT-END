@@ -9,7 +9,7 @@ const Drawer = createDrawerNavigator();
 
 export default function App() {
   return (
-    <NavigationContainer>
+    <NavigationContainer>  {/* Apenas um NavigationContainer no App.tsx */}
       <Drawer.Navigator initialRouteName="Login">
         <Drawer.Screen name="Login" component={LoginScreen} />
         <Drawer.Screen name="Home" component={HomeScreen} />
